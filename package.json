@@ -4,6 +4,7 @@
   "description": "This is project created for Leo Kristopher Piel's Master's Thesis",
   "main": "index.js",
   "scripts": {
+    "start": "npm i && node index.js",
     "test": "npm run test"
   },
   "repository": {

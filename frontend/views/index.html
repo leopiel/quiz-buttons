@@ -28,8 +28,8 @@
                 <div class="answerHeading">VASTAMISE JÄRJEKORD:</div>
                 <div class="answerOrder"></div>
             </div>
-
         </div>
+        <div class="date"></div>
         <div class="resetButton">
             RESET
         </div>
@@ -63,12 +63,18 @@
                 $('.answerButton').css({ display: 'block' });
             }
         }
+
+        if (parsedMessage.date) {
+            const currentData = $('.date').html();
+            $('.date').html(currentData + "<br/>" + parsedMessage.date)
+
+        }
     };
 
     function heartbeat() {
         if (!ws) return;
         if (ws.readyState !== 1) return;
-        socket.send({ heartbeat: true });
+        ws.send({ heartbeat: true });
     }
 
     setInterval(heartbeat, 1000);

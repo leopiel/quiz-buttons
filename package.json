@@ -1,0 +1,24 @@
+{
+  "name": "age_gender",
+  "version": "1.0.0",
+  "description": "This is project created for Leo Kristopher Piel's Master's Thesis",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://lkpiel@bitbucket.org/lkpiel/age_gender.git"
+  },
+  "author": "",
+  "engines": {
+    "node": "14"
+  },
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/lkpiel/age_gender#readme",
+  "dependencies": {
+    "express": "^4.16.2",
+    "nodemon": "^1.14.12",
+    "ws": "^8.2.2"
+  }
+}

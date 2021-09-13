@@ -1,0 +1,63 @@
+.container {
+  margin-left: auto;
+  margin-right: auto;
+  border: 1px solid gray;
+  width: 50%;
+  min-width: 500px;
+  padding: 20px;
+}
+
+.teamNameContainer {
+  display: none;
+}
+
+.teamNameSubmitContainer {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+}
+
+.teamName {
+  height: 24px;
+}
+.submitNameButton {
+  margin-top: 8px;
+  height: 32px;
+}
+
+.teamNameHolder {
+  font-weight: bold;
+}
+.answersWrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-top: 16px;
+}
+
+.answersContainer {
+  margin-top: 16px;
+}
+
+.answerButton {
+  display: none;
+  cursor: pointer;
+  width: 200px;
+  height: 200px;
+  background-color: green;
+  color: white;
+  font-weight: bold;
+  line-height: 200px;
+  text-align: center;
+}
+
+.resetButton {
+  margin-top: 2000px;
+  width: 500px;
+  height: 500px;
+  background: red;
+  color: white;
+  cursor: pointer;
+  text-align: center;
+  line-height: 500px;
+}

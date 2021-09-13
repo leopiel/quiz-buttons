@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Leo 28 quiz</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <script src="../js/jquery.js"></script>
+    <script>
+
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Leo 28 quiz buttons</h1>
+        <div class="teamNameSubmitContainer">
+            <input class="teamName" id="teamName" type="text" placeholder="Sisesta tiimi nimi" />
+            <button class="submitNameButton" onClick="submitTeam()">Saada tiimi nimi</button>
+        </div>
+        <div class="teamNameContainer">Sinu tiimi nimi: <span class="teamNameHolder"></span>
+        </div>
+        <div class="answersWrapper">
+            <div class="answerButton">
+                VASTA
+            </div>
+            <div class="answersContainer">
+                <div class="answerHeading">VASTAMISE JÄRJEKORD:</div>
+                <div class="answerOrder"></div>
+            </div>
+
+        </div>
+        <div class="resetButton">
+            RESET
+        </div>
+    </div>
+</body>
+<script>
+    const ws = new WebSocket('ws://localhost:3030');
+    let teamName = '';
+
+    ws.onopen = () => {
+        console.log('Now connected');
+    };
+    ws.onmessage = (event) => {
+        const parsedMessage = JSON.parse(event.data);
+
+        if (parsedMessage.answerOrder) {
+            $('.answerOrder').html();
+
+            let answerOrder = '';
+            parsedMessage.answerOrder.forEach((teamName, i) => {
+                answerOrder += (i + 1) + '. ' + teamName + '<br/>';
+            })
+
+            $('.answerOrder').html(answerOrder);
+        }
+
+        if (parsedMessage.reset) {
+            if (teamName) {
+                $('.answerButton').css({ display: 'block' });
+            }
+        }
+    };
+
+    const submitTeam = () => {
+        teamName = $('.teamName').val();
+        $('.teamNameContainer').css({ display: 'block' });
+        $('.teamNameHolder').html(teamName);
+
+        $('.teamNameSubmitContainer').css({ display: 'none' });
+        $('.answerButton').css({ display: 'block' });
+    }
+
+
+    $(document).ready(function () {
+        $('.answerButton').click(function (e) {
+            $('.answerButton').css({ display: 'none' });
+            ws.send(JSON.stringify({ answerer: teamName }));
+        });
+
+        $('.resetButton').click(function (e) {
+            ws.send(JSON.stringify({ reset: true }));
+
+        });
+    });
+</script>
+
+</html>

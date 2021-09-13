@@ -21,7 +21,9 @@ try {
 
   socketServer.on("connection", (socketClient) => {
     try {
+      console.log("NEW CONNECTION");
       socketClient.send(JSON.stringify({ answerOrder }));
+      console.log("HERE");
     } catch (err) {
       console.log(err);
     }

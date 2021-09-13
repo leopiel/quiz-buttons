@@ -1,77 +1,68 @@
-try {
-  const express = require("express");
-  const app = express();
+"use strict";
 
-  app.use(express.static("frontend"));
+const express = require("express");
+const WebSocket = require("ws");
 
-  app.get("/", function (req, res) {
-    res.sendFile(__dirname + "/frontend/views/index.html");
-  });
+const PORT = process.env.PORT || 3000;
+const INDEX = "/frontend/views/index.html";
 
-  const port = process.env.PORT || 8180;
+const server = express()
+  .use(express.static("frontend"))
+  .use((req, res) => res.sendFile(INDEX, { root: __dirname }))
+  .listen(PORT, () => console.log(`Listening on ${PORT}`));
 
-  app.listen(port, function () {
-    console.log("Our app is running on http://localhost:" + port);
-  });
+const wss = new WebSocket.Server({ server });
+let answerOrder = [];
 
-  const WebSocket = require("ws");
+wss.on("connection", (socketClient) => {
+  try {
+    console.log("NEW CONNECTION");
+    socketClient.send(JSON.stringify({ answerOrder }));
+    console.log("HERE");
+  } catch (err) {
+    console.log(err);
+  }
 
-  const socketServer = new WebSocket.Server({ port: 3400 });
-  let answerOrder = [];
-
-  socketServer.on("connection", (socketClient) => {
+  socketClient.on("message", (message) => {
     try {
-      console.log("NEW CONNECTION");
-      socketClient.send(JSON.stringify({ answerOrder }));
-      console.log("HERE");
+      const messageString = message.toString();
+      const messageJSON = JSON.parse(messageString);
+
+      if (messageJSON.answerer) {
+        answerOrder.push(messageJSON.answerer);
+      }
+
+      if (messageJSON.reset) {
+        answerOrder = [];
+      }
+
+      wss.clients.forEach((client) => {
+        try {
+          if (client.readyState === WebSocket.OPEN) {
+            if (messageJSON.answerer || messageJSON.reset) {
+              client.send(JSON.stringify({ answerOrder }));
+            }
+            if (messageJSON.reset) {
+              client.send(JSON.stringify({ answerOrder, reset: true }));
+            }
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      });
     } catch (err) {
       console.log(err);
     }
 
-    socketClient.on("message", (message) => {
-      try {
-        const messageString = message.toString();
-        const messageJSON = JSON.parse(messageString);
-
-        if (messageJSON.answerer) {
-          answerOrder.push(messageJSON.answerer);
-        }
-
-        if (messageJSON.reset) {
-          answerOrder = [];
-        }
-
-        socketServer.clients.forEach((client) => {
-          try {
-            if (client.readyState === WebSocket.OPEN) {
-              if (messageJSON.answerer || messageJSON.reset) {
-                client.send(JSON.stringify({ answerOrder }));
-              }
-              if (messageJSON.reset) {
-                client.send(JSON.stringify({ answerOrder, reset: true }));
-              }
-            }
-          } catch (err) {
-            console.log(err);
-          }
-        });
-      } catch (err) {
-        console.log(err);
-      }
-    });
-
     socketClient.on("close", (socketClient) => {
       console.log("closed");
-      console.log("Number of clients: ", socketServer.clients.size);
+      console.log("Number of clients: ", wss.clients.size);
     });
   });
+});
 
-  setInterval(() => {
-    socketServer.clients.forEach((client) => {
-      client.send(JSON.stringify({ date: new Date().toTimeString() }));
-    });
-  }, 1000);
-} catch (err) {
-  console.error(err);
-  process.exit(1);
-}
+setInterval(() => {
+  wss.clients.forEach((client) => {
+    client.send(JSON.stringify({ date: new Date().toTimeString() }));
+  });
+}, 1000);

@@ -65,6 +65,14 @@
         }
     };
 
+    function heartbeat() {
+        if (!ws) return;
+        if (ws.readyState !== 1) return;
+        socket.send({ heartbeat: true });
+    }
+
+    setInterval(heartbeat, 1000);
+
     const submitTeam = () => {
         teamName = $('.teamName').val();
         $('.teamNameContainer').css({ display: 'block' });

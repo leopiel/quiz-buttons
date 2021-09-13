@@ -16,7 +16,7 @@ try {
 
   const WebSocket = require("ws");
 
-  const socketServer = new WebSocket.Server({ port: 3400 });
+  const socketServer = new WebSocket.Server({ port: 80 });
   let answerOrder = [];
 
   socketServer.on("connection", (socketClient) => {

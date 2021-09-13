@@ -36,8 +36,9 @@
     </div>
 </body>
 <script>
-    var HOST = location.origin.replace(/^http/, 'ws')
-    var ws = new WebSocket(HOST);
+
+    var ws = new WebSocket('ws://quiz-buttons.herokuapp.com:3400');
+    let teamName = '';
 
     ws.onopen = () => {
         console.log('Now connected');

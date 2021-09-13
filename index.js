@@ -9,23 +9,13 @@ try {
     res.sendFile(__dirname + "/frontend/views/index.html");
   });
 
-  // app.post('/submitTeamName', function (req, res) {
-  //   try {
-  //     console.log('GOT ANSWERS ', req.body);
-
-  //     res.json({
-  //       ...req.body,
-  //     });
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // });
 
   const socketServer = new WebSocket.Server({ port: 3030 });
   let answerOrder = [];
 
   socketServer.on("connection", (socketClient) => {
     try {
+      console.log("NEW CONNECTION");
       socketClient.send(JSON.stringify({ answerOrder }));
     } catch (err) {
       console.log(err);
@@ -64,6 +54,11 @@ try {
       } catch (err) {
         console.log(err);
       }
+    });
+
+    socketClient.on("error", (error) => {
+      console.log("error ", error);
+      console.log("Number of clients: ", socketServer.clients.size);
     });
 
     socketClient.on("close", (socketClient) => {

@@ -1,7 +1,6 @@
 try {
   const express = require("express");
   const app = express();
-  const WebSocket = require("ws");
 
   app.use(express.static("frontend"));
 
@@ -9,13 +8,19 @@ try {
     res.sendFile(__dirname + "/frontend/views/index.html");
   });
 
+  const port = process.env.PORT || 8180;
 
-  const socketServer = new WebSocket.Server({ port: 3030 });
+  app.listen(port, function () {
+    console.log("Our app is running on http://localhost:" + port);
+  });
+
+  const WebSocket = require("ws");
+
+  const socketServer = new WebSocket.Server({ port: 1000 });
   let answerOrder = [];
 
   socketServer.on("connection", (socketClient) => {
     try {
-      console.log("NEW CONNECTION");
       socketClient.send(JSON.stringify({ answerOrder }));
     } catch (err) {
       console.log(err);
@@ -25,7 +30,6 @@ try {
       try {
         const messageString = message.toString();
         const messageJSON = JSON.parse(messageString);
-        console.log(messageJSON);
 
         if (messageJSON.answerer) {
           answerOrder.push(messageJSON.answerer);
@@ -41,7 +45,6 @@ try {
               if (messageJSON.answerer || messageJSON.reset) {
                 client.send(JSON.stringify({ answerOrder }));
               }
-  
               if (messageJSON.reset) {
                 client.send(JSON.stringify({ answerOrder, reset: true }));
               }
@@ -49,16 +52,10 @@ try {
           } catch (err) {
             console.log(err);
           }
-         
         });
       } catch (err) {
         console.log(err);
       }
-    });
-
-    socketClient.on("error", (error) => {
-      console.log("error ", error);
-      console.log("Number of clients: ", socketServer.clients.size);
     });
 
     socketClient.on("close", (socketClient) => {
@@ -67,11 +64,11 @@ try {
     });
   });
 
-  const port = process.env.PORT || 8080;
-
-  app.listen(port, function () {
-    console.log("Our app is running on http://localhost:" + port);
-  });
+  setInterval(() => {
+    socketServer.clients.forEach((client) => {
+      client.send(JSON.stringify({ date: new Date().toTimeString() }));
+    });
+  }, 1000);
 } catch (err) {
   console.error(err);
   process.exit(1);

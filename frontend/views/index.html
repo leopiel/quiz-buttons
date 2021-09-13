@@ -36,7 +36,13 @@
     </div>
 </body>
 <script>
-    const ws = new WebSocket('ws://localhost:3030');
+    var HOST = location.origin.replace(/^http/, 'ws')
+    if (HOST.indexOf(':') > -1) {
+        const marker = HOST.indexOf(':8180')
+        HOST = HOST.substring(0, marker);
+        console.log(HOST);
+    }
+    var ws = new WebSocket(HOST + ':1000');
     let teamName = '';
 
     ws.onopen = () => {
@@ -61,21 +67,6 @@
                 $('.answerButton').css({ display: 'block' });
             }
         }
-    };
-
-    ws.onclose = function (event) {
-        if (event.wasClean) {
-            alert(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
-        } else {
-            // e.g. server process killed or network down
-            // event.code is usually 1006 in this case
-            alert('[close] Connection died');
-            console.log(event);
-        }
-    };
-
-    ws.onerror = function (error) {
-        alert(`[error] ${error.message}`);
     };
 
     const submitTeam = () => {

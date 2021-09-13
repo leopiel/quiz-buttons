@@ -37,13 +37,7 @@
 </body>
 <script>
     var HOST = location.origin.replace(/^http/, 'ws')
-    if (HOST.indexOf(':8180') > -1) {
-        const marker = HOST.indexOf(':8180')
-        HOST = HOST.substring(0, marker);
-        console.log(HOST);
-    }
-    var ws = new WebSocket(HOST + ':80');
-    let teamName = '';
+    var ws = new WebSocket(HOST);
 
     ws.onopen = () => {
         console.log('Now connected');

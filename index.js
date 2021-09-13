@@ -3,20 +3,17 @@ try {
   const app = express();
 
   app.use(express.static("frontend"));
+  const PORT = process.env.PORT || 3000;
 
-  app.get("/", function (req, res) {
-    res.sendFile(__dirname + "/frontend/views/index.html");
-  });
-
-  const port = process.env.PORT || 8180;
-
-  app.listen(port, function () {
-    console.log("Our app is running on http://localhost:" + port);
-  });
+  const server = express()
+    .use((req, res) =>
+      res.sendFile("/frontend/views/index.html", { root: __dirname })
+    )
+    .listen(PORT, () => console.log(`Listening on ${PORT}`));
 
   const WebSocket = require("ws");
 
-  const socketServer = new WebSocket.Server({ port: 80 });
+  const socketServer = new WebSocket.Server({ server: app });
   let answerOrder = [];
 
   socketServer.on("connection", (socketClient) => {

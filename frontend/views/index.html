@@ -37,7 +37,7 @@
 </body>
 <script>
     var HOST = location.origin.replace(/^http/, 'ws')
-    if (HOST.indexOf(':') > -1) {
+    if (HOST.indexOf(':8180') > -1) {
         const marker = HOST.indexOf(':8180')
         HOST = HOST.substring(0, marker);
         console.log(HOST);

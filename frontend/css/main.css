@@ -2,7 +2,6 @@
 
 html,
 body {
-  margin: 0;
   padding: 0;
   width: 100%;
   height: 100%;
@@ -13,13 +12,13 @@ body {
 
 .siteHeading {
   margin: 0 0 4px 0;
-  font-size: 48px;
+  font-size: 64px;
   margin-top: 5%;
 }
 
 .siteSubHeading {
   margin: 0 0 32px 0;
-  font-size: 16px;
+  font-size: 24px;
 }
 
 .container {
@@ -80,7 +79,7 @@ body {
 .answerHeading {
   margin-bottom: 8px;
   font-weight: bold;
-  font-size: 18px;
+  font-size: 24px;
 }
 
 .answerButton {

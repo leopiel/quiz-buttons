@@ -13,29 +13,33 @@
 </head>
 
 <body>
-    <div class="container">
+    <div class="mainContainer">
         <div class="siteHeading">LEO 28</div>
         <div class="siteSubHeading">The quiz buzzer</div>
+        <div class="teamNameContainer">Team: <span class="teamNameHolder"></span> </div>
+
+
         <div class="teamNameSubmitContainer">
             <input class="teamName" id="teamName" type="text" placeholder="Sisesta tiimi nimi" />
             <div class="submitNameButton" onClick="submitTeam()">SAADA TIIMI NIMI</div>
+
         </div>
-        <div class="teamNameContainer">Team: <span class="teamNameHolder"></span>
+        <div class="answerButton">
+            VASTA
         </div>
-        <div class="answersWrapper">
-            <div class="answerButton">
-                VASTA
+
+    </div>
+    <div class="answersWrapper">
+
+        <div class="answersContainer">
+            <div class="answerHeading">VASTANUD</div>
+            <div class="answerOrder">
             </div>
-            <div class="answersContainer">
-                <div class="answerHeading">VASTANUD</div>
-                <div class="answerOrder">
-                </div>
-            </div>
         </div>
-        <div class="date"></div>
-        <div class="resetButton">
-            RESET
-        </div>
+    </div>
+    <div class="date"></div>
+    <div class="resetButton">
+        RESET
     </div>
 </body>
 <script>
@@ -50,10 +54,10 @@
         teamName = $('.teamName').val();
 
         if (teamName) {
-            $('.teamNameContainer').css({ display: 'block' });
+            $('.teamNameContainer').css({ visibility: 'visible' });
             $('.teamNameHolder').html(teamName);
 
-            $('.teamNameSubmitContainer').css({ display: 'none' });
+            $('.teamNameSubmitContainer').css({ visibility: 'hidden' });
             $('.answerButton').css({ display: 'block' });
         }
     }
@@ -61,7 +65,7 @@
     $(document).ready(function () {
         if (window.location.pathname === "/resetter") {
             console.log(window.location.pathname);
-            
+
             $('.resetButton').css({ display: "flex" });
         }
 

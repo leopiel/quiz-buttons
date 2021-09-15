@@ -62,6 +62,7 @@
         }
     }
 
+    let answered = false;
     $(document).ready(function () {
         if (window.location.pathname === "/resetter") {
             console.log(window.location.pathname);
@@ -71,10 +72,14 @@
 
 
         $('.answerButton').click(function (e) {
-            $('.answerButton').css({ display: 'none' });
-            heartbeat(false);
+            $('.answerButton').html('VASTUS SAADETUD');
+            $('.answerButton').css({ "background-color": "#284034",  "color": "#a8afa6" });
 
-            executeWithRetry(() => { ws.send(JSON.stringify({ answerer: teamName })); }, 100);
+            if (!answered) {
+                heartbeat(false);
+                executeWithRetry(() => { ws.send(JSON.stringify({ answerer: teamName })); }, 100);
+                answered = true;
+            }
         });
 
         $('.resetButton').click(function (e) {
@@ -114,14 +119,11 @@
             if (parsedMessage.reset) {
                 if (teamName) {
                     $('.answerButton').css({ display: 'block' });
+                    $('.answerButton').html('VASTA');
+                    $('.answerButton').css({ "background-color": "#66a182", "color": "#f1faee" });
+                    answered = false;
                 }
             }
-
-            // if (parsedMessage.date) {
-            //     const currentData = $('.date').html();
-            //     $('.date').html(currentData + "<br/>" + parsedMessage.date)
-
-            // }
         };
     }
 

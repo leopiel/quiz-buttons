@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Leo 28 quiz</title>
+    <title>Leo 28 - quiz buzzer</title>
     <link rel="stylesheet" href="../css/main.css">
     <script src="../js/jquery.js"></script>
     <script>
@@ -13,20 +13,20 @@
 
 <body>
     <div class="container">
-        <h1>Leo 28 quiz buttons</h1>
-
+        <div class="siteHeading">LEO 28</div>
+        <div class="siteSubHeading">The quiz buzzer</div>
         <div class="teamNameSubmitContainer">
             <input class="teamName" id="teamName" type="text" placeholder="Sisesta tiimi nimi" />
-            <button class="submitNameButton" onClick="submitTeam()">Saada tiimi nimi</button>
+            <div class="submitNameButton" onClick="submitTeam()">SAADA TIIMI NIMI</div>
         </div>
-        <div class="teamNameContainer">Sinu tiimi nimi: <span class="teamNameHolder"></span>
+        <div class="teamNameContainer">Team: <span class="teamNameHolder"></span>
         </div>
         <div class="answersWrapper">
             <div class="answerButton">
                 VASTA
             </div>
             <div class="answersContainer">
-                <div class="answerHeading">VASTAMISE JÄRJEKORD:</div>
+                <div class="answerHeading">VASTANUD</div>
                 <div class="answerOrder"></div>
             </div>
         </div>
@@ -56,8 +56,14 @@
         }
     }
 
-
     $(document).ready(function () {
+        if (window.location.pathname === "/resetter") {
+            console.log(window.location.pathname);
+            
+            $('.resetButton').css({ display: "flex" });
+        }
+
+
         $('.answerButton').click(function (e) {
             $('.answerButton').css({ display: 'none' });
             heartbeat(false);
@@ -105,11 +111,11 @@
                 }
             }
 
-            if (parsedMessage.date) {
-                const currentData = $('.date').html();
-                $('.date').html(currentData + "<br/>" + parsedMessage.date)
+            // if (parsedMessage.date) {
+            //     const currentData = $('.date').html();
+            //     $('.date').html(currentData + "<br/>" + parsedMessage.date)
 
-            }
+            // }
         };
     }
 

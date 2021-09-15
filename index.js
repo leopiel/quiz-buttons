@@ -5,6 +5,8 @@ const WebSocket = require("ws");
 
 const PORT = process.env.PORT || 3000;
 const INDEX = "/frontend/views/index.html";
+require('events').EventEmitter.prototype._maxListeners = 35;
+
 
 const server = express()
   .use(express.static("frontend"))
@@ -16,9 +18,8 @@ let answerOrder = [];
 
 wss.on("connection", (socketClient) => {
   try {
-    console.log("NEW CONNECTION");
+    console.log("New connection. Number of clients: ", wss.clients.size);
     socketClient.send(JSON.stringify({ answerOrder }));
-    console.log("HERE");
   } catch (err) {
     console.log(err);
   }

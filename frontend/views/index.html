@@ -14,6 +14,7 @@
 <body>
     <div class="container">
         <h1>Leo 28 quiz buttons</h1>
+
         <div class="teamNameSubmitContainer">
             <input class="teamName" id="teamName" type="text" placeholder="Sisesta tiimi nimi" />
             <button class="submitNameButton" onClick="submitTeam()">Saada tiimi nimi</button>
@@ -36,70 +37,106 @@
     </div>
 </body>
 <script>
+    let teamName = '';
 
     let HOST = location.origin.replace(/^http/, 'ws')
     let ws = new WebSocket(HOST);
-    let teamName = '';
 
-    ws.onopen = () => {
-        console.log('Now connected');
-    };
-    ws.onmessage = (event) => {
-        const parsedMessage = JSON.parse(event.data);
-
-        if (parsedMessage.answerOrder) {
-            $('.answerOrder').html();
-
-            let answerOrder = '';
-            parsedMessage.answerOrder.forEach((teamName, i) => {
-                answerOrder += (i + 1) + '. ' + teamName + '<br/>';
-            })
-
-            $('.answerOrder').html(answerOrder);
-        }
-
-        if (parsedMessage.reset) {
-            if (teamName) {
-                $('.answerButton').css({ display: 'block' });
-            }
-        }
-
-        if (parsedMessage.date) {
-            const currentData = $('.date').html();
-            $('.date').html(currentData + "<br/>" + parsedMessage.date)
-
-        }
-    };
-
-    function heartbeat() {
-        if (!ws) return;
-        if (ws.readyState !== 1) return;
-        ws.send({ heartbeat: true });
-    }
-
-    setInterval(heartbeat, 1000);
+    setWebsocketListeners(ws)
 
     const submitTeam = () => {
         teamName = $('.teamName').val();
-        $('.teamNameContainer').css({ display: 'block' });
-        $('.teamNameHolder').html(teamName);
 
-        $('.teamNameSubmitContainer').css({ display: 'none' });
-        $('.answerButton').css({ display: 'block' });
+        if (teamName) {
+            $('.teamNameContainer').css({ display: 'block' });
+            $('.teamNameHolder').html(teamName);
+
+            $('.teamNameSubmitContainer').css({ display: 'none' });
+            $('.answerButton').css({ display: 'block' });
+        }
     }
 
 
     $(document).ready(function () {
         $('.answerButton').click(function (e) {
             $('.answerButton').css({ display: 'none' });
-            ws.send(JSON.stringify({ answerer: teamName }));
+            heartbeat(false);
+
+            executeWithRetry(() => { ws.send(JSON.stringify({ answerer: teamName })); }, 100);
         });
 
         $('.resetButton').click(function (e) {
-            ws.send(JSON.stringify({ reset: true }));
+            heartbeat(false);
 
+            executeWithRetry(() => { ws.send(JSON.stringify({ reset: true })); }, 500);
         });
     });
+
+    function executeWithRetry(func, retryTime) {
+        try {
+            func();
+        } catch (err) {
+            console.log(err);
+            setTimeout(() => executeWithRetry(func, retryTime), retryTime)
+        }
+    }
+
+    function setWebsocketListeners(ws) {
+        ws.onopen = () => {
+            console.log('Now connected');
+        };
+        ws.onmessage = (event) => {
+            const parsedMessage = JSON.parse(event.data);
+
+            if (parsedMessage.answerOrder) {
+                $('.answerOrder').html();
+
+                let answerOrder = '';
+                parsedMessage.answerOrder.forEach((teamName, i) => {
+                    answerOrder += (i + 1) + '. ' + teamName + '<br/>';
+                })
+
+                $('.answerOrder').html(answerOrder);
+            }
+
+            if (parsedMessage.reset) {
+                if (teamName) {
+                    $('.answerButton').css({ display: 'block' });
+                }
+            }
+
+            if (parsedMessage.date) {
+                const currentData = $('.date').html();
+                $('.date').html(currentData + "<br/>" + parsedMessage.date)
+
+            }
+        };
+    }
+
+
+    function heartbeat(sendHeartbeat) {
+        if (!ws) {
+            ws = new WebSocket(HOST);
+            setWebsocketListeners(ws)
+
+            return;
+        }
+        if (ws.readyState !== 1) {
+            ws = new WebSocket(HOST);
+            setWebsocketListeners(ws)
+
+            return;
+        }
+
+        if (sendHeartbeat) {
+            ws.send(JSON.stringify({ heartbeat: true }));
+        }
+    }
+
+    setInterval(() => heartbeat(true), 2000);
+
+
+
 </script>
 
 </html>

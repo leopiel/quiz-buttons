@@ -9,6 +9,7 @@ body {
   font-family: "Open Sans Condensed", "Helvetica", "Arial", sans-serif;
   letter-spacing: 0.5px;
   background-color: #0d324d;
+  display: flex;
 }
 
 .siteHeading {
@@ -29,6 +30,7 @@ body {
   flex-direction: column;
   text-align: center;
   color: #f1faee;
+  width: 100%;
 }
 
 .teamNameContainer {

@@ -1,5 +1,6 @@
 @import "https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300";
 
+
 html,
 body {
   padding: 0;
@@ -10,6 +11,10 @@ body {
   letter-spacing: 0.5px;
   background-color: #0d324d;
   display: flex;
+}
+
+input:focus, textarea {
+  outline: none !important;
 }
 
 .siteHeading {
@@ -48,10 +53,18 @@ body {
 .teamName {
   height: 32px;
   padding-left: 4px;
+  font-size: 16px;
+  border-radius: 0px;
+  border:0;
+}
+
+.teamName:active {
+  box-shadow: none
 }
 .submitNameButton {
   margin-top: 8px;
   height: 32px;
+  font-weight: bold;
   background-color: #457b9d;
   color: #f1faee;
   box-shadow: 0;

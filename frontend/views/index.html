@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Leo 28 - quiz buzzer</title>
+    <title>Leo - quiz buzzer</title>
     <link rel="stylesheet" href="../css/main.css">
     <script src="../js/jquery.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -14,7 +14,7 @@
 
 <body>
     <div class="mainContainer">
-        <div class="siteHeading">LEO 28</div>
+        <div class="siteHeading">LEO BUZZER</div>
         <div class="siteSubHeading">The quiz buzzer</div>
         <div class="teamNameContainer">Team: <span class="teamNameHolder"></span> </div>
 
@@ -22,7 +22,8 @@
         <div class="teamNameSubmitContainer">
             <input class="teamName" id="teamName" type="text" placeholder="Sisesta tiimi nimi" />
             <div class="submitNameButton" onClick="submitTeam()">SAADA TIIMI NIMI</div>
-
+        </div>
+        <div class="answerContainer">
         </div>
         <div class="answerButton">
             VASTA
@@ -30,7 +31,6 @@
 
     </div>
     <div class="answersWrapper">
-
         <div class="answersContainer">
             <div class="answerHeading">VASTANUD</div>
             <div class="answerOrder">
@@ -44,6 +44,7 @@
 </body>
 <script>
     let teamName = '';
+    let answer = '';
 
     let HOST = location.origin.replace(/^http/, 'ws')
     let ws = new WebSocket(HOST);
@@ -57,27 +58,31 @@
             $('.teamNameContainer').css({ visibility: 'visible' });
             $('.teamNameHolder').html(teamName);
 
-            $('.teamNameSubmitContainer').css({ visibility: 'hidden' });
+            $('.teamNameSubmitContainer').css({ display: 'none' });
+            $('.answerContainer').html('<input class="answer" id="answer" type="text" placeholder="Sisesta vastus" />');
             $('.answerButton').css({ display: 'block' });
         }
     }
 
     let answered = false;
-    $(document).ready(function () {
-        if (window.location.pathname === "/resetter") {
-            console.log(window.location.pathname);
+    let isResetter = false;
 
+    $(document).ready(function () {
+        isResetter = window.location.pathname === "/resetter";
+
+        if (isResetter) {
             $('.resetButton').css({ display: "flex" });
         }
 
-
         $('.answerButton').click(function (e) {
+            answer = $('.answer').val();
+            document.getElementById("answer").setAttribute('disabled', 'true')
             $('.answerButton').html('VASTUS SAADETUD');
-            $('.answerButton').css({ "background-color": "#284034",  "color": "#a8afa6" });
+            $('.answerButton').css({ "background-color": "#284034", "color": "#a8afa6" });
 
             if (!answered) {
                 heartbeat(false);
-                executeWithRetry(() => { ws.send(JSON.stringify({ answerer: teamName })); }, 100);
+                executeWithRetry(() => { ws.send(JSON.stringify({ answerer: teamName, answer })); }, 100);
                 answered = true;
             }
         });
@@ -109,8 +114,16 @@
                 $('.answerOrder').html();
 
                 let answerOrder = '';
-                parsedMessage.answerOrder.forEach((teamName, i) => {
-                    answerOrder += (i + 1) + '. ' + teamName + '<br/>';
+
+                parsedMessage.answerOrder.forEach((data, i) => {
+                    const ordinaryMsg = (i + 1) + '. ' + data.teamName + '<br/>';
+                    const resetterMsg = (i + 1) + '. ' + data.teamName + ' - "' + data.answer + '"<br/>';
+
+                    if (isResetter) {
+                        answerOrder += resetterMsg;
+                    } else {
+                        answerOrder += ordinaryMsg;
+                    }
                 })
 
                 $('.answerOrder').html(answerOrder);
@@ -119,6 +132,8 @@
             if (parsedMessage.reset) {
                 if (teamName) {
                     $('.answerButton').css({ display: 'block' });
+                    document.getElementById("answer").removeAttribute('disabled')
+                    $('.answer').val('');
                     $('.answerButton').html('VASTA');
                     $('.answerButton').css({ "background-color": "#66a182", "color": "#f1faee" });
                     answered = false;

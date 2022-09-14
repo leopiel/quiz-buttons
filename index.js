@@ -30,7 +30,7 @@ wss.on("connection", (socketClient) => {
       const messageJSON = JSON.parse(messageString);
 
       if (messageJSON.answerer) {
-        answerOrder.push(messageJSON.answerer);
+        answerOrder.push({teamName: messageJSON.answerer, answer: messageJSON.answer});
       }
 
       if (messageJSON.reset) {

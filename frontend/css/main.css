@@ -53,6 +53,22 @@ input:focus, textarea {
   margin: 0 auto;
 }
 
+.answer {
+  height:32px;
+  padding-left: 4px;
+  font-size: 16px;
+  border-radius: 0px;
+  border:0;
+  margin-bottom: 8px; 
+  margin-top: 24px; 
+  width: 30%;
+  min-width: 300px;
+}
+
+.answer:active {
+  box-shadow: none
+}
+
 .teamName {
   height: 32px;
   padding-left: 4px;
@@ -113,7 +129,6 @@ input:focus, textarea {
   margin: 0 auto;
   font-size: 24px;
   letter-spacing: 2px;
-  margin-top: -98px;
   height: 98px;
 }
 

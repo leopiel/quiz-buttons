@@ -76,14 +76,14 @@
 
         $('.answerButton').click(function (e) {
             answer = $('.answer').val();
-            document.getElementById("answer").setAttribute('disabled', 'true')
-            $('.answerButton').html('VASTUS SAADETUD');
-            $('.answerButton').css({ "background-color": "#284034", "color": "#a8afa6" });
+            // document.getElementById("answer").setAttribute('disabled', 'true')
+            // $('.answerButton').html('VASTUS SAADETUD');
+            // $('.answerButton').css({ "background-color": "#284034", "color": "#a8afa6" });
 
             if (!answered) {
                 heartbeat(false);
                 executeWithRetry(() => { ws.send(JSON.stringify({ answerer: teamName, answer })); }, 100);
-                answered = true;
+                // answered = true;
             }
         });
 

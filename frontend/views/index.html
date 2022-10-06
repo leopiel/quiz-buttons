@@ -20,19 +20,19 @@
 
 
         <div class="teamNameSubmitContainer">
-            <input class="teamName" id="teamName" type="text" placeholder="Sisesta tiimi nimi" />
-            <div class="submitNameButton" onClick="submitTeam()">SAADA TIIMI NIMI</div>
+            <input class="teamName" id="teamName" type="text" placeholder="Enter team name" />
+            <div class="submitNameButton" onClick="submitTeam()">Send team name</div>
         </div>
         <div class="answerContainer">
         </div>
         <div class="answerButton">
-            VASTA
+            ANSWER
         </div>
 
     </div>
     <div class="answersWrapper">
         <div class="answersContainer">
-            <div class="answerHeading">VASTANUD</div>
+            <div class="answerHeading">Answered</div>
             <div class="answerOrder">
             </div>
         </div>
@@ -76,14 +76,16 @@
 
         $('.answerButton').click(function (e) {
             answer = $('.answer').val();
-            // document.getElementById("answer").setAttribute('disabled', 'true')
-            // $('.answerButton').html('VASTUS SAADETUD');
-            // $('.answerButton').css({ "background-color": "#284034", "color": "#a8afa6" });
+            document.getElementById("answer").setAttribute('disabled', 'true')
+            $('#answerButton').html('');
+
+            $('.answerButton').html('Answer Sent');
+            $('.answerButton').css({ "background-color": "#284034", "color": "#a8afa6" });
 
             if (!answered) {
                 heartbeat(false);
                 executeWithRetry(() => { ws.send(JSON.stringify({ answerer: teamName, answer })); }, 100);
-                // answered = true;
+                answered = true;
             }
         });
 
@@ -122,7 +124,7 @@
                     if (isResetter) {
                         answerOrder += resetterMsg;
                     } else {
-                        answerOrder += resetterMsg;
+                        answerOrder += ordinaryMsg;
                     }
                 })
 
